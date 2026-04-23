@@ -6,13 +6,13 @@ let selectedUser = null;
 
 // Email → Display Name map
 const nameMap = {
-  "janidu@gmail.com": "Janidu Rukshan",
-  "saditha@gmail.com": "Saditha",
+  "janidurukshan300@gmail.com": "Janidu Rukshan",
+  "sadithapabasara94@gmail.com": "Saditha",
   "sasmitha@gmail.com": "Sasmitha",
-  "dulina@gmail.com": "Dulina",
+  "dulinasadith1127@gmail.com": "Dulina",
   "inura@gmail.com": "Inura",
   "vinupa@gmail.com": "Vinupa",
-  "thamidu@gmail.com": "Thamidu",
+  "thamiduranmina4@gmail.com": "Thamidu",
   "chamidu@gmail.com": "Chamidu",
   "hashan@gmail.com": "Hashan Devinda"
 };
