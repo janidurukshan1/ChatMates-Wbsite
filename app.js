@@ -1,7 +1,9 @@
 import { auth } from "./firebase.js";
 import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// Wait until auth is ready
+let currentUser = null;
+
+// wait for auth to be ready
 onAuthStateChanged(auth, (user) => {
 
   if (!user) {
@@ -9,21 +11,14 @@ onAuthStateChanged(auth, (user) => {
     return;
   }
 
-  // SAFE access after auth loads
-  const currentUser = user.email;
+  currentUser = user.email;
 
   document.getElementById("me").innerText = currentUser;
-
-  // You can keep your chat logic below this safely
 });
 
-// Logout
-window.logout = function () {
-  signOut(auth)
-    .then(() => {
-      window.location.href = "index.html";
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+// logout
+window.logout = function(){
+  signOut(auth).then(() => {
+    window.location.href = "index.html";
+  });
 };
