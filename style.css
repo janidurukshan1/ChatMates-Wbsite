@@ -1,0 +1,124 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f0f0f;
+  color: white;
+}
+
+/* LOGIN */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-box {
+  width: 90%;
+  max-width: 350px;
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.logo {
+  width: 80px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: #222;
+  border: none;
+  border-radius: 8px;
+  color: white;
+}
+
+button {
+  margin-top: 10px;
+  padding: 12px;
+  width: 100%;
+  background: #00aaff;
+  border: none;
+  border-radius: 8px;
+  color: white;
+}
+
+/* CHAT */
+.chat-container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 30%;
+  background: #111;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+.sidebar li {
+  padding: 10px;
+  background: #222;
+  margin: 5px 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.chat-box {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+/* MESSAGE BUBBLES */
+.me {
+  background: #00aaff;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+  align-self: flex-end;
+  max-width: 70%;
+}
+
+.other {
+  background: #222;
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+  align-self: flex-start;
+  max-width: 70%;
+}
+
+#msg {
+  padding: 15px;
+  border: none;
+  background: #222;
+  color: white;
+}
+
+/* 📱 MOBILE */
+@media (max-width: 768px) {
+
+  .chat-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: 35%;
+  }
+
+  .chat-box {
+    width: 100%;
+    height: 65%;
+  }
+}
