@@ -1,32 +1,58 @@
-import { db, ref, push, onValue } from "./firebase.js";
-import { users } from "./users.js";
+import { db, ref, push, onValue, auth } from "./firebase.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-let currentUser = localStorage.getItem("user");
-document.getElementById("me").innerText = currentUser;
-
+let currentUser = null;
 let selectedUser = null;
 
-// Load users
-let ul = document.getElementById("users");
+// Email → Display Name map
+const nameMap = {
+  "janidu@gmail.com": "Janidu Rukshan",
+  "saditha@gmail.com": "Saditha",
+  "sasmitha@gmail.com": "Sasmitha",
+  "dulina@gmail.com": "Dulina",
+  "inura@gmail.com": "Inura",
+  "vinupa@gmail.com": "Vinupa",
+  "thamidu@gmail.com": "Thamidu",
+  "chamidu@gmail.com": "Chamidu",
+  "hashan@gmail.com": "Hashan Devinda"
+};
 
-for(let u in users){
-  if(u !== currentUser){
-    let li = document.createElement("li");
-    li.innerText = u;
-    li.onclick = () => selectUser(u);
-    ul.appendChild(li);
+// 🔐 Check login
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location = "index.html";
+  } else {
+    currentUser = user.email;
+    document.getElementById("me").innerText = nameMap[currentUser] || currentUser;
+    loadUsers();
+  }
+});
+
+// 👥 Load users list
+function loadUsers(){
+  let ul = document.getElementById("users");
+  ul.innerHTML = "";
+
+  for(let email in nameMap){
+    if(email !== currentUser){
+      let li = document.createElement("li");
+      li.innerText = nameMap[email];
+      li.onclick = () => selectUser(email);
+      ul.appendChild(li);
+    }
   }
 }
 
-function selectUser(u){
-  selectedUser = u;
-  document.getElementById("chatWith").innerText = "Chat with " + u;
+// 📥 Select user
+function selectUser(email){
+  selectedUser = email;
+  document.getElementById("chatWith").innerText = "Chat with " + nameMap[email];
   loadMessages();
 }
 
-// Send message
+// 📤 Send message
 window.sendMsg = function(){
-  let text = msg.value.trim();
+  let text = document.getElementById("msg").value.trim();
   if(!text || !selectedUser) return;
 
   let chatId = getChatId(currentUser, selectedUser);
@@ -36,10 +62,10 @@ window.sendMsg = function(){
     text: text
   });
 
-  msg.value = "";
+  document.getElementById("msg").value = "";
 };
 
-// Real-time messages
+// 🔄 Real-time messages
 function loadMessages(){
   let chatId = getChatId(currentUser, selectedUser);
 
@@ -49,7 +75,6 @@ function loadMessages(){
 
     snapshot.forEach(child => {
       let data = child.val();
-
       let div = document.createElement("div");
 
       if(data.from === currentUser){
@@ -66,12 +91,12 @@ function loadMessages(){
   });
 }
 
-// Unique chat ID
+// 🔑 Unique chat ID
 function getChatId(a, b){
   return [a, b].sort().join("_");
 }
 
+// 🚪 Logout
 window.logout = function(){
-  localStorage.removeItem("user");
-  location = "index.html";
+  signOut(auth);
 };
