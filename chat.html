@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChatMates</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="chat-container">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h3 id="me"></h3>
+    <ul id="users"></ul>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <!-- Chat -->
+  <div class="chat-box">
+    <h3 id="chatWith">Select a user</h3>
+    <div id="messages"></div>
+
+    <input id="msg" placeholder="Type message..."
+    onkeypress="if(event.key==='Enter') sendMsg()">
+  </div>
+
+</div>
+
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
