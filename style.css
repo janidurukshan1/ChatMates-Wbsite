@@ -1,53 +1,41 @@
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: Arial;
   background: #0f0f0f;
   color: white;
-  transition: 0.5s;
 }
 
-/* Intro */
-.intro {
-  text-align: center;
-  padding: 40px;
-}
-.slide {
-  display: none;
-  font-size: 20px;
-}
-.slide.active {
-  display: block;
-}
-
-/* Login */
-.login-box {
-  text-align: center;
-  padding: 20px;
-}
-input {
-  width: 90%;
-  padding: 12px;
-  margin: 10px;
-  border-radius: 8px;
-  border: none;
-  background: #222;
-  color: white;
-}
-button {
-  padding: 12px;
-  width: 90%;
-  background: #00aaff;
-  border: none;
-  border-radius: 8px;
-}
-
-/* Chat */
-.chat-app {
+/* Layout */
+.app {
   display: flex;
-  flex-direction: column;
   height: 100vh;
 }
 
+/* Sidebar */
+.sidebar {
+  width: 30%;
+  background: #111;
+  overflow-y: auto;
+}
+
+.sidebar h3 {
+  padding: 10px;
+}
+
+.sidebar li {
+  padding: 12px;
+  border-bottom: 1px solid #222;
+  cursor: pointer;
+}
+
+/* Chat area */
+.chat-area {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
 .chat-header {
   background: #111;
   padding: 15px;
@@ -71,6 +59,7 @@ button {
   align-self: flex-end;
   max-width: 70%;
 }
+
 .other {
   background: #222;
   padding: 10px;
@@ -85,19 +74,34 @@ button {
   padding: 10px;
   background: #111;
 }
+
 .input-area input {
   flex: 1;
+  padding: 10px;
+  border: none;
+  background: #222;
+  color: white;
 }
-.send-btn {
+
+.input-area button {
   width: 60px;
-  margin-left: 5px;
+  background: #00aaff;
+  border: none;
 }
 
-/* Animations */
-.fade-in { animation: fadeIn 0.5s; }
-.fade-out { opacity: 0; }
+/* 📱 Mobile */
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+  }
 
-@keyframes fadeIn {
-  from {opacity:0}
-  to {opacity:1}
+  .sidebar {
+    width: 100%;
+    height: 30%;
+  }
+
+  .chat-area {
+    width: 100%;
+    height: 70%;
+  }
 }
