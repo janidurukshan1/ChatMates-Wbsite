@@ -1,8 +1,8 @@
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  databaseURL: "YOUR_DB_URL",
-  projectId: "YOUR_ID"
+  apiKey: "AIzaSyDUvwNFqMNHO_REKwHt0uYL4xOG2TMK0BU",
+  authDomain: "chatmates-e2c70.firebaseapp.com",
+  databaseURL: "https://chatmates-e2c70-default-rtdb.firebaseio.com/",
+  projectId: "chatmates-e2c70"
 };
 
 firebase.initializeApp(firebaseConfig);
