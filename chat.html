@@ -1,34 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>ChatMates</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChatMates</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="fade-in">
 
-<div class="chat-container">
+<div class="chat-app">
 
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h3 id="me"></h3>
-    <ul id="users"></ul>
-    <button onclick="logout()">Logout</button>
+  <!-- Header -->
+  <div class="chat-header">
+    <span id="chatName">Chat</span>
+    <button onclick="logout()">⎋</button>
   </div>
 
-  <!-- Chat -->
-  <div class="chat-box">
-    <h3 id="chatWith">Select a user</h3>
-    <div id="messages"></div>
+  <!-- Messages -->
+  <div id="messages" class="messages"></div>
 
-    <input id="msg" placeholder="Type message..."
+  <!-- Input -->
+  <div class="input-area">
+    <input id="msg" placeholder="Type a message..."
     onkeypress="if(event.key==='Enter') sendMsg()">
+
+    <button onclick="sendMsg()" class="send-btn">➤</button>
   </div>
 
 </div>
 
-<script type="module" src="app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+
+<script src="ui.js"></script>
 
 </body>
 </html>
