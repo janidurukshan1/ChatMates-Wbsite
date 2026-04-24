@@ -23,7 +23,7 @@ const users = [
   "vinupa@gmail.com",
   "thamiduranmina4@gmail.com",
   "chamidu@gmail.com",
-  "hashan@gmail.com"
+  "hashandev20030723@gmail.com"
 ];
 
 // 🔐 Check login
