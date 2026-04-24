@@ -1,85 +1,68 @@
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: sans-serif;
   background: #0f0f0f;
   color: white;
+  transition: 0.5s;
 }
 
-/* LOGIN */
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.login-box {
-  width: 90%;
-  max-width: 350px;
-  background: #1a1a1a;
-  padding: 20px;
-  border-radius: 15px;
+/* Intro */
+.intro {
   text-align: center;
+  padding: 40px;
+}
+.slide {
+  display: none;
+  font-size: 20px;
+}
+.slide.active {
+  display: block;
 }
 
-.logo {
-  width: 80px;
+/* Login */
+.login-box {
+  text-align: center;
+  padding: 20px;
 }
-
 input {
-  width: 100%;
+  width: 90%;
   padding: 12px;
-  margin-top: 10px;
-  background: #222;
-  border: none;
+  margin: 10px;
   border-radius: 8px;
+  border: none;
+  background: #222;
   color: white;
 }
-
 button {
-  margin-top: 10px;
   padding: 12px;
-  width: 100%;
+  width: 90%;
   background: #00aaff;
   border: none;
   border-radius: 8px;
-  color: white;
 }
 
-/* CHAT */
-.chat-container {
+/* Chat */
+.chat-app {
   display: flex;
+  flex-direction: column;
   height: 100vh;
 }
 
-.sidebar {
-  width: 30%;
+.chat-header {
   background: #111;
-  padding: 10px;
-  overflow-y: auto;
-}
-
-.sidebar li {
-  padding: 10px;
-  background: #222;
-  margin: 5px 0;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.chat-box {
-  width: 70%;
+  padding: 15px;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
 }
 
-#messages {
+/* Messages */
+.messages {
   flex: 1;
-  overflow-y: auto;
   padding: 10px;
+  overflow-y: auto;
 }
 
-/* MESSAGE BUBBLES */
+/* Bubbles */
 .me {
   background: #00aaff;
   padding: 10px;
@@ -88,37 +71,33 @@ button {
   align-self: flex-end;
   max-width: 70%;
 }
-
 .other {
   background: #222;
   padding: 10px;
   margin: 5px;
   border-radius: 10px;
-  align-self: flex-start;
   max-width: 70%;
 }
 
-#msg {
-  padding: 15px;
-  border: none;
-  background: #222;
-  color: white;
+/* Input */
+.input-area {
+  display: flex;
+  padding: 10px;
+  background: #111;
+}
+.input-area input {
+  flex: 1;
+}
+.send-btn {
+  width: 60px;
+  margin-left: 5px;
 }
 
-/* 📱 MOBILE */
-@media (max-width: 768px) {
+/* Animations */
+.fade-in { animation: fadeIn 0.5s; }
+.fade-out { opacity: 0; }
 
-  .chat-container {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    height: 35%;
-  }
-
-  .chat-box {
-    width: 100%;
-    height: 65%;
-  }
+@keyframes fadeIn {
+  from {opacity:0}
+  to {opacity:1}
 }
