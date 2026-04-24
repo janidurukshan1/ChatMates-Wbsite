@@ -6,25 +6,32 @@
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="fade-in">
+<body>
 
-<div class="chat-app">
+<div class="app">
 
-  <!-- Header -->
-  <div class="chat-header">
-    <span id="chatName">Chat</span>
-    <button onclick="logout()">⎋</button>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h3>Your Chats</h3>
+    <ul id="userList"></ul>
   </div>
 
-  <!-- Messages -->
-  <div id="messages" class="messages"></div>
+  <!-- Chat Area -->
+  <div class="chat-area">
 
-  <!-- Input -->
-  <div class="input-area">
-    <input id="msg" placeholder="Type a message..."
-    onkeypress="if(event.key==='Enter') sendMsg()">
+    <div class="chat-header">
+      <span id="chatName">Select a chat</span>
+      <button onclick="logout()">⎋</button>
+    </div>
 
-    <button onclick="sendMsg()" class="send-btn">➤</button>
+    <div id="messages" class="messages"></div>
+
+    <div class="input-area">
+      <input id="msg" placeholder="Type message..."
+      onkeypress="if(event.key==='Enter') sendMsg()">
+      <button onclick="sendMsg()">➤</button>
+    </div>
+
   </div>
 
 </div>
