@@ -16,12 +16,12 @@
     <ul id="userList"></ul>
   </div>
 
-  <!-- Chat Area -->
+  <!-- Chat -->
   <div class="chat-area">
 
     <div class="chat-header">
       <span id="chatName">Select a chat</span>
-      <button onclick="logout()">⎋</button>
+      <button onclick="logout()" class="logout-btn">Logout</button>
     </div>
 
     <div id="messages" class="messages"></div>
@@ -30,6 +30,13 @@
       <input id="msg" placeholder="Type message..."
       onkeypress="if(event.key==='Enter') sendMsg()">
       <button onclick="sendMsg()">➤</button>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="bottom-bar">
+      <button onclick="openGroup()">👥</button>
+      <button>📞</button>
+      <button>⚙️</button>
     </div>
 
   </div>
