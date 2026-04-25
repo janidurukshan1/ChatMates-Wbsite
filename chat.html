@@ -10,42 +10,57 @@
 
 <div class="app">
 
-  <!-- Sidebar -->
   <div class="sidebar">
-    <h3>Your Chats</h3>
+
+    <div class="profile-box">
+      <img id="profilePic" src="https://via.placeholder.com/50">
+      <input type="file" id="uploadPic">
+    </div>
+
+    <h3>Chats</h3>
     <ul id="userList"></ul>
+
   </div>
 
-  <!-- Chat -->
   <div class="chat-area">
 
     <div class="chat-header">
-      <span id="chatName">Select a chat</span>
-      <button onclick="logout()" class="logout-btn">Logout</button>
+      <span id="chatName">Select Chat</span>
+      <button onclick="logout()">Logout</button>
     </div>
 
     <div id="messages" class="messages"></div>
+    <div id="typing" class="typing"></div>
 
     <div class="input-area">
-      <input id="msg" placeholder="Type message..."
+      <input id="msg" placeholder="Type..." 
       onkeypress="if(event.key==='Enter') sendMsg()">
       <button onclick="sendMsg()">➤</button>
     </div>
 
-    <!-- Bottom bar -->
     <div class="bottom-bar">
       <button onclick="openGroup()">👥</button>
-      <button>📞</button>
-      <button>⚙️</button>
+      <button onclick="setStatus()">📢</button>
     </div>
 
   </div>
 
 </div>
 
+<!-- GROUP MODAL -->
+<div id="groupModal" class="modal">
+  <div class="modal-content">
+    <h3>Create Group</h3>
+    <input id="groupName" placeholder="Group name">
+    <div id="memberList"></div>
+    <button onclick="createGroup()">Create</button>
+  </div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
 <script src="ui.js"></script>
 
