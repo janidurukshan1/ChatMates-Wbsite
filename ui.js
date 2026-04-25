@@ -13,78 +13,115 @@ const db = firebase.database();
 let currentUser = null;
 let selectedUser = null;
 
-// 👥 Your users
-const users = [
-  "janidurukshan300@gmail.com",
-  "sadithapabasara94@gmail.com",
-  "SasmithaDinadith335@gmail.com",
-  "dulinasadith1127@gmail.com",
-  "inura@gmail.com",
-  "vinupa@gmail.com",
-  "thamiduranmina4@gmail.com",
-  "chamidu@gmail.com",
-  "hashandev20030723@gmail.com"
-];
+// 👥 USERS WITH NAMES
+const users = {
+  "janidurukshan300@gmail.com": "Janidu Rukshan",
+  "sadithapabasara94@gmail.com": "Saditha",
+  "sasmithadinadith335@gmail.com": "Sasmitha",
+  "dulinasadith1127@gmail.com": "Dulina",
+  "inura@gmail.com": "Inura",
+  "vinupa@gmail.com": "Vinupa",
+  "thamiduranmina4@gmail.com": "Thamidu",
+  "janoghachamindu@gmail.com": "Chamidu",
+  "hashandev20030723@gmail.com": "Hashan Devinda"
+};
 
-// 🔐 Check login
+// 🔐 LOGIN CHECK
 auth.onAuthStateChanged(user=>{
   if(!user) location="index.html";
   currentUser = user.email;
   loadUsers();
+  loadGroups();
 });
 
-// 👥 Load user list
+// 👥 LOAD USERS
 function loadUsers(){
   userList.innerHTML = "";
 
-  users.forEach(u=>{
-    if(u !== currentUser){
+  Object.keys(users).forEach(email=>{
+    if(email !== currentUser){
       let li = document.createElement("li");
-      li.innerText = u;
-      li.onclick = ()=> selectUser(u);
+
+      li.innerHTML = `
+        <div class="user-item">
+          <div class="avatar">${users[email][0]}</div>
+          <div>${users[email]}</div>
+        </div>
+      `;
+
+      li.onclick = ()=> selectChat(email,false);
       userList.appendChild(li);
     }
   });
 }
 
-// 🔑 Create chat ID
+// 👥 LOAD GROUPS
+function loadGroups(){
+  db.ref("groups").on("value", snap=>{
+    snap.forEach(g=>{
+      let group = g.val();
+      let id = g.key;
+
+      let li = document.createElement("li");
+      li.innerHTML = `👥 ${group.name}`;
+      li.onclick = ()=> selectChat(id,true);
+
+      userList.appendChild(li);
+    });
+  });
+}
+
+// 🔑 CHAT ID
 function getChatId(a,b){
   return [a,b].sort().join("_");
 }
 
-// 📥 Select chat
-function selectUser(u){
-  selectedUser = u;
-  chatName.innerText = u;
-  loadMessages();
+// 📥 SELECT CHAT
+function selectChat(id,isGroup){
+  selectedUser = {id,isGroup};
+
+  if(isGroup){
+    chatName.innerText = "Group Chat";
+    loadGroupMessages(id);
+  } else {
+    chatName.innerText = users[id];
+    loadMessages(id);
+  }
 }
 
-// 📤 Send message
+// 📤 SEND MESSAGE
 function sendMsg(){
   let text = msg.value.trim();
   if(!text || !selectedUser) return;
 
-  let chatId = getChatId(currentUser, selectedUser);
+  if(selectedUser.isGroup){
+    db.ref("groups/"+selectedUser.id+"/messages").push({
+      from: currentUser,
+      text: text
+    });
+  } else {
+    let chatId = getChatId(currentUser, selectedUser.id);
 
-  db.ref("chats/"+chatId).push({
-    from: currentUser,
-    text: text
-  });
+    db.ref("chats/"+chatId).push({
+      from: currentUser,
+      text: text
+    });
+  }
 
   msg.value="";
 }
 
-// 🔄 Load messages (REALTIME)
-function loadMessages(){
-  let chatId = getChatId(currentUser, selectedUser);
+// 🔄 PRIVATE CHAT
+function loadMessages(user){
+  let chatId = getChatId(currentUser,user);
 
   db.ref("chats/"+chatId).on("value", snap=>{
     messages.innerHTML="";
 
     snap.forEach(c=>{
       let d = c.val();
-
       let div = document.createElement("div");
+
       div.className = d.from === currentUser ? "me" : "other";
       div.innerText = d.text;
 
@@ -95,7 +132,44 @@ function loadMessages(){
   });
 }
 
-// 🚪 Logout
+// 🔄 GROUP CHAT
+function loadGroupMessages(id){
+  db.ref("groups/"+id+"/messages").on("value", snap=>{
+    messages.innerHTML="";
+
+    snap.forEach(c=>{
+      let d = c.val();
+      let div = document.createElement("div");
+
+      div.className = d.from === currentUser ? "me" : "other";
+      div.innerText = users[d.from] + ": " + d.text;
+
+      messages.appendChild(div);
+    });
+
+    messages.scrollTop = messages.scrollHeight;
+  });
+}
+
+// 👥 CREATE GROUP
+function openGroup(){
+  let name = prompt("Group Name");
+  let desc = prompt("Description");
+
+  if(!name) return;
+
+  let id = "group_"+Date.now();
+
+  db.ref("groups/"+id).set({
+    name,
+    desc,
+    members:[currentUser]
+  });
+
+  alert("Group Created!");
+}
+
+// 🚪 LOGOUT
 function logout(){
   auth.signOut().then(()=> location="index.html");
 }
