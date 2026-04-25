@@ -9,11 +9,11 @@ firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 const db = firebase.database();
+const storage = firebase.storage();
 
-let currentUser = null;
-let selectedUser = null;
+let currentUser, selectedUser;
 
-// 👥 USERS WITH NAMES
+// USERS
 const users = {
   "janidurukshan300@gmail.com": "Janidu Rukshan",
   "sadithapabasara94@gmail.com": "Saditha",
@@ -26,150 +26,109 @@ const users = {
   "hashandev20030723@gmail.com": "Hashan Devinda"
 };
 
-// 🔐 LOGIN CHECK
+// LOGIN CHECK
 auth.onAuthStateChanged(user=>{
   if(!user) location="index.html";
   currentUser = user.email;
   loadUsers();
-  loadGroups();
 });
 
-// 👥 LOAD USERS
+// LOAD USERS
 function loadUsers(){
-  userList.innerHTML = "";
-
-  Object.keys(users).forEach(email=>{
-    if(email !== currentUser){
-      let li = document.createElement("li");
-
-      li.innerHTML = `
-        <div class="user-item">
-          <div class="avatar">${users[email][0]}</div>
-          <div>${users[email]}</div>
-        </div>
-      `;
-
-      li.onclick = ()=> selectChat(email,false);
+  userList.innerHTML="";
+  Object.keys(users).forEach(u=>{
+    if(u!==currentUser){
+      let li=document.createElement("li");
+      li.innerText=users[u];
+      li.onclick=()=>selectChat(u,false);
       userList.appendChild(li);
     }
   });
 }
 
-// 👥 LOAD GROUPS
-function loadGroups(){
-  db.ref("groups").on("value", snap=>{
-    snap.forEach(g=>{
-      let group = g.val();
-      let id = g.key;
-
-      let li = document.createElement("li");
-      li.innerHTML = `👥 ${group.name}`;
-      li.onclick = ()=> selectChat(id,true);
-
-      userList.appendChild(li);
-    });
-  });
-}
-
-// 🔑 CHAT ID
-function getChatId(a,b){
-  return [a,b].sort().join("_");
-}
-
-// 📥 SELECT CHAT
+// SELECT CHAT
 function selectChat(id,isGroup){
-  selectedUser = {id,isGroup};
-
-  if(isGroup){
-    chatName.innerText = "Group Chat";
-    loadGroupMessages(id);
-  } else {
-    chatName.innerText = users[id];
-    loadMessages(id);
-  }
+  selectedUser={id,isGroup};
+  chatName.innerText=users[id]||"Group";
+  loadMessages();
 }
 
-// 📤 SEND MESSAGE
+// SEND
 function sendMsg(){
-  let text = msg.value.trim();
-  if(!text || !selectedUser) return;
+  let text=msg.value.trim();
+  if(!text||!selectedUser)return;
 
-  if(selectedUser.isGroup){
-    db.ref("groups/"+selectedUser.id+"/messages").push({
-      from: currentUser,
-      text: text
-    });
-  } else {
-    let chatId = getChatId(currentUser, selectedUser.id);
+  let path = selectedUser.isGroup
+    ? "groups/"+selectedUser.id+"/messages"
+    : "chats/"+[currentUser,selectedUser.id].sort().join("_");
 
-    db.ref("chats/"+chatId).push({
-      from: currentUser,
-      text: text
-    });
-  }
+  db.ref(path).push({
+    from:currentUser,
+    text,
+    time:Date.now()
+  });
 
   msg.value="";
 }
 
-// 🔄 PRIVATE CHAT
-function loadMessages(user){
-  let chatId = getChatId(currentUser,user);
+// LOAD MESSAGES
+function loadMessages(){
+  let path = selectedUser.isGroup
+    ? "groups/"+selectedUser.id+"/messages"
+    : "chats/"+[currentUser,selectedUser.id].sort().join("_");
 
-  db.ref("chats/"+chatId).on("value", snap=>{
+  db.ref(path).on("value",snap=>{
     messages.innerHTML="";
-
     snap.forEach(c=>{
-      let d = c.val();
-      let div = document.createElement("div");
+      let d=c.val();
 
-      div.className = d.from === currentUser ? "me" : "other";
-      div.innerText = d.text;
+      // delete after 7 days
+      if(Date.now()-d.time>7*24*60*60*1000)return;
 
+      let div=document.createElement("div");
+      div.className=d.from===currentUser?"me":"other";
+      div.innerText=d.text;
       messages.appendChild(div);
     });
-
-    messages.scrollTop = messages.scrollHeight;
   });
 }
 
-// 🔄 GROUP CHAT
-function loadGroupMessages(id){
-  db.ref("groups/"+id+"/messages").on("value", snap=>{
-    messages.innerHTML="";
+// PROFILE PIC
+uploadPic.onchange=e=>{
+  let file=e.target.files[0];
+  let ref=storage.ref("profiles/"+currentUser);
 
-    snap.forEach(c=>{
-      let d = c.val();
-      let div = document.createElement("div");
-
-      div.className = d.from === currentUser ? "me" : "other";
-      div.innerText = users[d.from] + ": " + d.text;
-
-      messages.appendChild(div);
+  ref.put(file).then(()=>{
+    ref.getDownloadURL().then(url=>{
+      profilePic.src=url;
     });
-
-    messages.scrollTop = messages.scrollHeight;
   });
-}
+};
 
-// 👥 CREATE GROUP
+// GROUP
 function openGroup(){
-  let name = prompt("Group Name");
-  let desc = prompt("Description");
+  groupModal.style.display="block";
+}
 
-  if(!name) return;
-
-  let id = "group_"+Date.now();
+function createGroup(){
+  let name=groupName.value;
+  let id="group_"+Date.now();
 
   db.ref("groups/"+id).set({
     name,
-    desc,
     members:[currentUser]
   });
 
-  alert("Group Created!");
+  groupModal.style.display="none";
 }
 
-// 🚪 LOGOUT
+// STATUS
+function setStatus(){
+  let text=prompt("Status");
+  db.ref("status/"+currentUser).set(text);
+}
+
+// LOGOUT
 function logout(){
-  auth.signOut().then(()=> location="index.html");
+  auth.signOut().then(()=>location="index.html");
 }
