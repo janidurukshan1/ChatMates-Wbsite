@@ -19,19 +19,32 @@ const users = {
   "sadithapabasara94@gmail.com": "Saditha",
   "sasmithadinadith335@gmail.com": "Sasmitha",
   "dulinasadith1127@gmail.com": "Dulina",
-  "inura@gmail.com": "Inura",
+  "inuramethnuka879@gmail.com": "Inura",
   "vinupa@gmail.com": "Vinupa",
   "thamiduranmina4@gmail.com": "Thamidu",
   "janoghachamindu@gmail.com": "Chamidu",
   "hashandev20030723@gmail.com": "Hashan Devinda"
 };
 
-// LOGIN CHECK
+// LOGIN
 auth.onAuthStateChanged(user=>{
   if(!user) location="index.html";
+
   currentUser = user.email;
+  setOnline();
   loadUsers();
 });
+
+// ONLINE STATUS
+function setOnline(){
+  let ref = db.ref("status/"+currentUser);
+  ref.set({online:true});
+
+  ref.onDisconnect().set({
+    online:false,
+    lastSeen:Date.now()
+  });
+}
 
 // LOAD USERS
 function loadUsers(){
@@ -40,95 +53,124 @@ function loadUsers(){
     if(u!==currentUser){
       let li=document.createElement("li");
       li.innerText=users[u];
-      li.onclick=()=>selectChat(u,false);
+      li.onclick=()=>selectChat(u);
       userList.appendChild(li);
     }
   });
 }
 
 // SELECT CHAT
-function selectChat(id,isGroup){
-  selectedUser={id,isGroup};
-  chatName.innerText=users[id]||"Group";
+function selectChat(u){
+  selectedUser=u;
+  chatName.innerText=users[u];
+
+  // show status
+  db.ref("status/"+u).on("value",snap=>{
+    let s=snap.val();
+    if(s?.online){
+      statusText.innerText="Online 🟢";
+    } else if(s?.lastSeen){
+      statusText.innerText="Last seen "+new Date(s.lastSeen).toLocaleTimeString();
+    }
+  });
+
   loadMessages();
 }
 
-// SEND
+// SEND MSG
 function sendMsg(){
   let text=msg.value.trim();
-  if(!text||!selectedUser)return;
+  if(!text || !selectedUser) return;
 
-  let path = selectedUser.isGroup
-    ? "groups/"+selectedUser.id+"/messages"
-    : "chats/"+[currentUser,selectedUser.id].sort().join("_");
+  let id=[currentUser,selectedUser].sort().join("_");
 
-  db.ref(path).push({
+  db.ref("chats/"+id).push({
     from:currentUser,
     text,
-    time:Date.now()
+    time:Date.now(),
+    seen:false
   });
 
   msg.value="";
 }
 
-// LOAD MESSAGES
+// LOAD MSG
 function loadMessages(){
-  let path = selectedUser.isGroup
-    ? "groups/"+selectedUser.id+"/messages"
-    : "chats/"+[currentUser,selectedUser.id].sort().join("_");
+  let id=[currentUser,selectedUser].sort().join("_");
 
-  db.ref(path).on("value",snap=>{
+  db.ref("chats/"+id).on("value",snap=>{
     messages.innerHTML="";
+
     snap.forEach(c=>{
       let d=c.val();
 
-      // delete after 7 days
-      if(Date.now()-d.time>7*24*60*60*1000)return;
-
       let div=document.createElement("div");
       div.className=d.from===currentUser?"me":"other";
-      div.innerText=d.text;
+
+      let time=new Date(d.time).toLocaleTimeString();
+
+      div.innerHTML=`
+        ${d.text}
+        <div class="meta">
+          ${time} ${d.from===currentUser?(d.seen?"✓✓":"✓"):""}
+        </div>
+      `;
+
+      // mark seen
+      if(d.from!==currentUser){
+        c.ref.update({seen:true});
+      }
+
       messages.appendChild(div);
     });
+
+    messages.scrollTop=messages.scrollHeight;
   });
 }
 
-// PROFILE PIC
-uploadPic.onchange=e=>{
+// TYPING
+function typingNow(){
+  if(!selectedUser) return;
+
+  db.ref("typing/"+selectedUser).set(currentUser);
+
+  setTimeout(()=>{
+    db.ref("typing/"+selectedUser).remove();
+  },1500);
+}
+
+db.ref("typing").on("value",snap=>{
+  if(snap.val()===selectedUser){
+    typing.innerText="Typing...";
+  } else typing.innerText="";
+});
+
+// IMAGE SEND
+imgInput.onchange=e=>{
   let file=e.target.files[0];
-  let ref=storage.ref("profiles/"+currentUser);
+  let ref=storage.ref("images/"+Date.now());
 
   ref.put(file).then(()=>{
     ref.getDownloadURL().then(url=>{
-      profilePic.src=url;
+      msg.value=url;
+      sendMsg();
     });
   });
 };
 
-// GROUP
-function openGroup(){
-  groupModal.style.display="block";
+// EMOJI
+function addEmoji(){
+  msg.value += "😊";
 }
 
-function createGroup(){
-  let name=groupName.value;
-  let id="group_"+Date.now();
-
-  db.ref("groups/"+id).set({
-    name,
-    members:[currentUser]
-  });
-
-  groupModal.style.display="none";
-}
-
-// STATUS
-function setStatus(){
-  let text=prompt("Status");
-  db.ref("status/"+currentUser).set(text);
+// SIDEBAR
+function toggleSidebar(){
+  sidebar.classList.toggle("hide");
 }
 
 // LOGOUT
 function logout(){
-  auth.signOut().then(()=>location="index.html");
+  if(confirm("Logout?")){
+    auth.signOut().then(()=>location="index.html");
+  }
 }
