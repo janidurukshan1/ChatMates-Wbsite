@@ -10,23 +10,20 @@
 
 <div class="app">
 
-  <div class="sidebar">
-
-    <div class="profile-box">
-      <img id="profilePic" src="https://via.placeholder.com/50">
-      <input type="file" id="uploadPic">
-    </div>
-
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
     <h3>Chats</h3>
     <ul id="userList"></ul>
-
   </div>
 
+  <!-- Chat -->
   <div class="chat-area">
 
     <div class="chat-header">
+      <button onclick="toggleSidebar()">☰</button>
       <span id="chatName">Select Chat</span>
-      <button onclick="logout()">Logout</button>
+      <span id="statusText"></span>
+      <button onclick="logout()">⎋</button>
     </div>
 
     <div id="messages" class="messages"></div>
@@ -34,13 +31,14 @@
 
     <div class="input-area">
       <input id="msg" placeholder="Type..." 
+      oninput="typingNow()"
       onkeypress="if(event.key==='Enter') sendMsg()">
-      <button onclick="sendMsg()">➤</button>
-    </div>
 
-    <div class="bottom-bar">
-      <button onclick="openGroup()">👥</button>
-      <button onclick="setStatus()">📢</button>
+      <input type="file" id="imgInput" hidden>
+      <button onclick="imgInput.click()">📷</button>
+
+      <button onclick="addEmoji()">😊</button>
+      <button onclick="sendMsg()">➤</button>
     </div>
 
   </div>
@@ -52,8 +50,8 @@
   <div class="modal-content">
     <h3>Create Group</h3>
     <input id="groupName" placeholder="Group name">
-    <div id="memberList"></div>
     <button onclick="createGroup()">Create</button>
+    <button onclick="groupModal.style.display='none'">Cancel</button>
   </div>
 </div>
 
