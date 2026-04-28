@@ -10,55 +10,57 @@
 
 <div class="app">
 
-  <!-- Sidebar -->
+  <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
-    <h3>Chats</h3>
+    <h3>ChatMates</h3>
     <ul id="userList"></ul>
   </div>
 
-  <!-- Chat -->
+  <!-- CHAT AREA -->
   <div class="chat-area">
 
+    <!-- HEADER -->
     <div class="chat-header">
-      <button onclick="toggleSidebar()">☰</button>
-      <span id="chatName">Select Chat</span>
-      <span id="statusText"></span>
-      <button onclick="logout()">⎋</button>
+      <div class="chat-user">
+        <div class="avatar" id="chatAvatar">C</div>
+        <div>
+          <div id="chatName">Select Chat</div>
+          <div id="statusText" class="status"></div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button onclick="toggleSidebar()">☰</button>
+        <button onclick="logout()">⎋</button>
+      </div>
     </div>
 
+    <!-- MESSAGES -->
     <div id="messages" class="messages"></div>
     <div id="typing" class="typing"></div>
 
+    <!-- INPUT -->
     <div class="input-area">
-      <input id="msg" placeholder="Type..." 
-      oninput="typingNow()"
-      onkeypress="if(event.key==='Enter') sendMsg()">
+      <button class="icon-btn" onclick="addEmoji()">😊</button>
+
+      <input id="msg" placeholder="Type a message..."
+        oninput="typingNow()"
+        onkeypress="if(event.key==='Enter') sendMsg()">
 
       <input type="file" id="imgInput" hidden>
-      <button onclick="imgInput.click()">📷</button>
+      <button class="icon-btn" onclick="imgInput.click()">📎</button>
 
-      <button onclick="addEmoji()">😊</button>
-      <button onclick="sendMsg()">➤</button>
+      <button class="send-btn" onclick="sendMsg()">➤</button>
     </div>
 
   </div>
 
 </div>
 
-<!-- GROUP MODAL -->
-<div id="groupModal" class="modal">
-  <div class="modal-content">
-    <h3>Create Group</h3>
-    <input id="groupName" placeholder="Group name">
-    <button onclick="createGroup()">Create</button>
-    <button onclick="groupModal.style.display='none'">Cancel</button>
-  </div>
-</div>
-
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
 <script src="ui.js"></script>
 
