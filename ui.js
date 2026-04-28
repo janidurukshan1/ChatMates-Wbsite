@@ -11,7 +11,7 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-// 🔔 notification sound
+// 🔔 Notification sound
 const notifySound = new Audio("https://www.soundjay.com/buttons/sounds/button-3.mp3");
 
 // GLOBAL
@@ -21,30 +21,30 @@ let lastMsgKey = "";
 
 // USERS
 const users = {
-   "janidurukshan300@gmail.com": "Janidu Rukshan",
-  "sadithapabasara94@gmail.com": "Saditha Pabasara",
-  "sasmithadinadith335@gmail.com": "Sasmitha Dinadith",
-  "dulinasadith1127@gmail.com": "Dulina Sadith",
-  "inuramethnuka879@gmail.com": "Inura Methnuka",
+ "janidurukshan300@gmail.com": "Janidu Rukshan",
+  "sadithapabasara94@gmail.com": "Saditha",
+  "sasmithadinadith335@gmail.com": "Sasmitha",
+  "dulinasadith1127@gmail.com": "Dulina",
+  "inuramethnuka879@gmail.com": "Inura",
   "vinupa@gmail.com": "Vinupa",
-  "thamiduranmina4@gmail.com": "Thamidu Ranmina",
-  "janoghachamindu@gmail.com": "Chamidu Janoga",
+  "thamiduranmina4@gmail.com": "Thamidu",
+  "janoghachamindu@gmail.com": "Chamidu",
   "hashandev20030723@gmail.com": "Hashan Devinda"
 };
 
 // 🔐 AUTH CHECK
 auth.onAuthStateChanged(user => {
   if (!user) {
-    window.location = "index.html";
+    location = "index.html";
   } else {
     currentUser = user.email;
-    setOnlineStatus();
+    setOnline();
     loadUsers();
   }
 });
 
 // 🟢 ONLINE STATUS
-function setOnlineStatus() {
+function setOnline() {
   const ref = db.ref("status/" + currentUser);
 
   ref.set({ online: true });
@@ -68,16 +68,21 @@ function loadUsers() {
         <div>${users[u]}</div>
       `;
 
-      li.onclick = () => selectChat(u);
+      li.onclick = () => selectChat(u, li);
       userList.appendChild(li);
     }
   });
 }
 
 // 💬 SELECT CHAT
-function selectChat(user) {
+function selectChat(user, element) {
   selectedUser = user;
   chatName.innerText = users[user];
+  chatAvatar.innerText = users[user][0];
+
+  // active highlight
+  document.querySelectorAll("#userList li").forEach(li => li.classList.remove("active"));
+  element.classList.add("active");
 
   // status
   db.ref("status/" + user).on("value", snap => {
@@ -87,8 +92,8 @@ function selectChat(user) {
     if (s.online) {
       statusText.innerText = "Online 🟢";
     } else {
-      let time = new Date(s.lastSeen).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-      statusText.innerText = "Last seen " + time;
+      let t = new Date(s.lastSeen).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      statusText.innerText = "Last seen " + t;
     }
   });
 
@@ -104,7 +109,7 @@ function sendMsg() {
 
   db.ref("chats/" + chatId).push({
     from: currentUser,
-    text: text,
+    text,
     time: Date.now(),
     seen: false
   });
@@ -120,29 +125,14 @@ imgInput.onchange = e => {
   let reader = new FileReader();
 
   reader.onload = function () {
-    let img = new Image();
-    img.src = reader.result;
+    let chatId = [currentUser, selectedUser].sort().join("_");
 
-    img.onload = function () {
-      let canvas = document.createElement("canvas");
-      let ctx = canvas.getContext("2d");
-
-      canvas.width = 300;
-      canvas.height = (img.height / img.width) * 300;
-
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-      let compressed = canvas.toDataURL("image/jpeg", 0.7);
-
-      let chatId = [currentUser, selectedUser].sort().join("_");
-
-      db.ref("chats/" + chatId).push({
-        from: currentUser,
-        image: compressed,
-        time: Date.now(),
-        seen: false
-      });
-    };
+    db.ref("chats/" + chatId).push({
+      from: currentUser,
+      image: reader.result,
+      time: Date.now(),
+      seen: false
+    });
   };
 
   reader.readAsDataURL(file);
@@ -164,13 +154,9 @@ function loadMessages() {
 
       let time = new Date(data.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
-      let content = "";
-
-      if (data.image) {
-        content = `<img src="${data.image}" style="max-width:200px;border-radius:8px">`;
-      } else {
-        content = data.text;
-      }
+      let content = data.image
+        ? `<img src="${data.image}" style="max-width:200px;border-radius:10px">`
+        : data.text;
 
       div.innerHTML = `
         ${content}
@@ -232,8 +218,6 @@ function toggleSidebar() {
 // 🚪 LOGOUT
 function logout() {
   if (confirm("Are you sure you want to logout?")) {
-    auth.signOut().then(() => {
-      window.location = "index.html";
-    });
+    auth.signOut().then(() => location = "index.html");
   }
 }
