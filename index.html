@@ -6,20 +6,18 @@
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="login-bg">
 
-<div class="login-container">
-  <div class="card">
-    <h1>ChatMates</h1>
-    <p>Login to continue</p>
+<div class="login-card">
+  <h2>LOGIN</h2>
 
-    <input id="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
+  <input id="email" type="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
 
-    <button onclick="login()">Login</button>
-  </div>
+  <button onclick="login()">SIGN IN</button>
 </div>
 
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
@@ -27,19 +25,20 @@
 const firebaseConfig = {
   apiKey: "AIzaSyDUvwNFqMNHO_REKwHt0uYL4xOG2TMK0BU",
   authDomain: "chatmates-e2c70.firebaseapp.com",
-  projectId: "chatmates-e2c70"
 };
 
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 
-function login(){
+function login() {
   let email = document.getElementById("email").value;
-  let password = document.getElementById("password").value;
+  let pass = document.getElementById("password").value;
 
-  auth.signInWithEmailAndPassword(email,password)
-  .then(()=> location="chat.html")
-  .catch(e=>alert(e.message));
+  firebase.auth().signInWithEmailAndPassword(email, pass)
+    .then(() => {
+      localStorage.setItem("firstLogin", "true");
+      window.location = "chat.html";
+    })
+    .catch(err => alert(err.message));
 }
 </script>
 
