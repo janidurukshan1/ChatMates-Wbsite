@@ -8,56 +8,37 @@
 
 <body>
 
+<!-- GET START POPUP -->
+<div id="welcomeBox" class="welcome">
+  <h3>Welcome to ChatMates</h3>
+  <p>Start chatting with your friends now!</p>
+  <button onclick="closeWelcome()">Get Started</button>
+</div>
+
 <div class="app">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-    <h3>ChatMates</h3>
+  <div class="sidebar">
+    <h3>Chats</h3>
     <ul id="userList"></ul>
   </div>
 
-  <!-- CHAT AREA -->
   <div class="chat-area">
-
-    <!-- HEADER -->
     <div class="chat-header">
-      <div class="chat-user">
-        <div class="avatar" id="chatAvatar">C</div>
-        <div>
-          <div id="chatName">Select Chat</div>
-          <div id="statusText" class="status"></div>
-        </div>
-      </div>
-
-      <div class="header-actions">
-        <button onclick="toggleSidebar()">☰</button>
-        <button onclick="logout()">⎋</button>
-      </div>
+      <span id="chatName">Select Chat</span>
+      <button onclick="logout()">Logout</button>
     </div>
 
-    <!-- MESSAGES -->
     <div id="messages" class="messages"></div>
-    <div id="typing" class="typing"></div>
 
-    <!-- INPUT -->
     <div class="input-area">
-      <button class="icon-btn" onclick="addEmoji()">😊</button>
-
-      <input id="msg" placeholder="Type a message..."
-        oninput="typingNow()"
+      <input id="msg" placeholder="Type message..."
         onkeypress="if(event.key==='Enter') sendMsg()">
-
-      <input type="file" id="imgInput" hidden>
-      <button class="icon-btn" onclick="imgInput.click()">📎</button>
-
-      <button class="send-btn" onclick="sendMsg()">➤</button>
+      <button onclick="sendMsg()">Send</button>
     </div>
-
   </div>
 
 </div>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
