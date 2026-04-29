@@ -1,9 +1,8 @@
-// 🔥 FIREBASE CONFIG
+// 🔥 CONFIG
 const firebaseConfig = {
   apiKey: "AIzaSyDUvwNFqMNHO_REKwHt0uYL4xOG2TMK0BU",
   authDomain: "chatmates-e2c70.firebaseapp.com",
-  databaseURL: "https://chatmates-e2c70-default-rtdb.firebaseio.com/",
-  projectId: "chatmates-e2c70"
+  databaseURL: "https://chatmates-e2c70-default-rtdb.firebaseio.com/"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -11,13 +10,8 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-// 🔔 Notification sound
-const notifySound = new Audio("https://www.soundjay.com/buttons/sounds/button-3.mp3");
-
-// GLOBAL
 let currentUser = "";
 let selectedUser = "";
-let lastMsgKey = "";
 
 // USERS
 const users = {
@@ -29,24 +23,23 @@ const users = {
   "vinupa@gmail.com": "Vinupa",
   "thamiduranmina4@gmail.com": "Thamidu",
   "janoghachamindu@gmail.com": "Chamidu",
+  "adheeshamethsilu@gmail.com : Adheesha" ,
   "hashandev20030723@gmail.com": "Hashan Devinda"
 };
 
-// 🔐 AUTH CHECK
+// AUTH
 auth.onAuthStateChanged(user => {
-  if (!user) {
-    location = "index.html";
-  } else {
+  if (!user) location = "index.html";
+  else {
     currentUser = user.email;
     setOnline();
     loadUsers();
   }
 });
 
-// 🟢 ONLINE STATUS
+// ONLINE
 function setOnline() {
   const ref = db.ref("status/" + currentUser);
-
   ref.set({ online: true });
 
   ref.onDisconnect().set({
@@ -55,52 +48,41 @@ function setOnline() {
   });
 }
 
-// 👥 LOAD USERS
+// USERS LIST
 function loadUsers() {
   userList.innerHTML = "";
 
   Object.keys(users).forEach(u => {
     if (u !== currentUser) {
       let li = document.createElement("li");
-
-      li.innerHTML = `
-        <div class="avatar">${users[u][0]}</div>
-        <div>${users[u]}</div>
-      `;
-
+      li.innerHTML = `<div class="avatar">${users[u][0]}</div>${users[u]}`;
       li.onclick = () => selectChat(u, li);
       userList.appendChild(li);
     }
   });
 }
 
-// 💬 SELECT CHAT
-function selectChat(user, element) {
+// SELECT CHAT
+function selectChat(user, el) {
   selectedUser = user;
   chatName.innerText = users[user];
-  chatAvatar.innerText = users[user][0];
 
-  // active highlight
-  document.querySelectorAll("#userList li").forEach(li => li.classList.remove("active"));
-  element.classList.add("active");
+  document.querySelectorAll("li").forEach(l => l.classList.remove("active"));
+  el.classList.add("active");
 
-  // status
   db.ref("status/" + user).on("value", snap => {
     let s = snap.val();
     if (!s) return;
 
-    if (s.online) {
-      statusText.innerText = "Online 🟢";
-    } else {
-      let t = new Date(s.lastSeen).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-      statusText.innerText = "Last seen " + t;
-    }
+    statusText.innerText = s.online
+      ? "Online 🟢"
+      : "Last seen " + new Date(s.lastSeen).toLocaleTimeString();
   });
 
   loadMessages();
 }
 
-// 📤 SEND TEXT
+// SEND
 function sendMsg() {
   let text = msg.value.trim();
   if (!text || !selectedUser) return;
@@ -117,28 +99,7 @@ function sendMsg() {
   msg.value = "";
 }
 
-// 📷 SEND IMAGE (BASE64)
-imgInput.onchange = e => {
-  let file = e.target.files[0];
-  if (!file || !selectedUser) return;
-
-  let reader = new FileReader();
-
-  reader.onload = function () {
-    let chatId = [currentUser, selectedUser].sort().join("_");
-
-    db.ref("chats/" + chatId).push({
-      from: currentUser,
-      image: reader.result,
-      time: Date.now(),
-      seen: false
-    });
-  };
-
-  reader.readAsDataURL(file);
-};
-
-// 📥 LOAD MESSAGES
+// LOAD
 function loadMessages() {
   let chatId = [currentUser, selectedUser].sort().join("_");
 
@@ -146,34 +107,20 @@ function loadMessages() {
     messages.innerHTML = "";
 
     snap.forEach(child => {
-      let data = child.val();
-      let key = child.key;
+      let d = child.val();
 
       let div = document.createElement("div");
-      div.className = data.from === currentUser ? "me" : "other";
+      div.className = d.from === currentUser ? "me" : "other";
 
-      let time = new Date(data.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-
-      let content = data.image
-        ? `<img src="${data.image}" style="max-width:200px;border-radius:10px">`
-        : data.text;
+      let time = new Date(d.time).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
       div.innerHTML = `
-        ${content}
-        <div class="meta">
-          ${time} ${data.from === currentUser ? (data.seen ? "✓✓" : "✓") : ""}
-        </div>
+        ${d.text || ""}
+        <div class="meta">${time} ${d.from===currentUser ? (d.seen?"✓✓":"✓"):""}</div>
       `;
 
-      // mark seen
-      if (data.from !== currentUser && !data.seen) {
+      if (d.from !== currentUser && !d.seen) {
         child.ref.update({ seen: true });
-      }
-
-      // notification
-      if (key !== lastMsgKey && data.from !== currentUser) {
-        notifySound.play();
-        lastMsgKey = key;
       }
 
       messages.appendChild(div);
@@ -183,7 +130,7 @@ function loadMessages() {
   });
 }
 
-// ✍️ TYPING
+// TYPING
 function typingNow() {
   if (!selectedUser) return;
 
@@ -194,30 +141,28 @@ function typingNow() {
   }, 1500);
 }
 
-// 👀 SHOW TYPING
 db.ref("typing").on("value", snap => {
   let t = snap.val();
-
-  if (t && t === selectedUser) {
-    typing.innerText = "Typing...";
-  } else {
-    typing.innerText = "";
-  }
+  typing.innerText = t === selectedUser ? "Typing..." : "";
 });
 
-// 😀 EMOJI
-function addEmoji() {
-  msg.value += "😊";
-}
-
-// 📱 SIDEBAR
-function toggleSidebar() {
-  sidebar.classList.toggle("hide");
-}
-
-// 🚪 LOGOUT
+// LOGOUT
 function logout() {
-  if (confirm("Are you sure you want to logout?")) {
-    auth.signOut().then(() => location = "index.html");
+  if (confirm("Logout?")) {
+    auth.signOut();
   }
+}
+
+// POPUP
+window.onload = () => {
+  if (localStorage.getItem("firstLogin") === "true") {
+    welcomeBox.style.display = "block";
+    localStorage.removeItem("firstLogin");
+  } else {
+    welcomeBox.style.display = "none";
+  }
+};
+
+function closeWelcome() {
+  welcomeBox.style.display = "none";
 }
