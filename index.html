@@ -11,20 +11,19 @@
 <div class="login-card">
   <h2>LOGIN</h2>
 
-  <input id="email" type="email" placeholder="Email">
+  <input id="email" type="email" placeholder="Email Address">
   <input id="password" type="password" placeholder="Password">
 
   <button onclick="login()">SIGN IN</button>
 </div>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
 <script>
 const firebaseConfig = {
   apiKey: "AIzaSyDUvwNFqMNHO_REKwHt0uYL4xOG2TMK0BU",
-  authDomain: "chatmates-e2c70.firebaseapp.com",
+  authDomain: "chatmates-e2c70.firebaseapp.com"
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -34,11 +33,11 @@ function login() {
   let pass = document.getElementById("password").value;
 
   firebase.auth().signInWithEmailAndPassword(email, pass)
-    .then(() => {
-      localStorage.setItem("firstLogin", "true");
-      window.location = "chat.html";
-    })
-    .catch(err => alert(err.message));
+  .then(() => {
+    localStorage.setItem("firstLogin", "true");
+    window.location = "chat.html";
+  })
+  .catch(err => alert(err.message));
 }
 </script>
 
