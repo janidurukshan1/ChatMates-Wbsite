@@ -8,18 +8,17 @@
 
 <body>
 
-<!-- GET START POPUP -->
 <div id="welcomeBox" class="welcome">
   <h3>Welcome to ChatMates</h3>
-  <p>Start chatting with your friends now!</p>
   <button onclick="closeWelcome()">Get Started</button>
 </div>
 
 <div class="app">
 
-  <div class="sidebar">
-    <h3>Chats</h3>
-    <ul id="userList"></ul>
+  <div class="chat-list">
+    <div class="top-bar">Chat</div>
+    <input class="search" placeholder="Search">
+    <div id="userList" class="user-list"></div>
   </div>
 
   <div class="chat-area">
@@ -31,8 +30,8 @@
     <div id="messages" class="messages"></div>
 
     <div class="input-area">
-      <input id="msg" placeholder="Type message..."
-        onkeypress="if(event.key==='Enter') sendMsg()">
+      <input id="msg" placeholder="Type message"
+      onkeypress="if(event.key==='Enter') sendMsg()">
       <button onclick="sendMsg()">Send</button>
     </div>
   </div>
