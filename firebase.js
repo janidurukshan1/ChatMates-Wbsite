@@ -1,7 +1,4 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
+// 🔥 PUT YOUR REAL CONFIG FROM FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyDUvwNFqMNHO_REKwHt0uYL4xOG2TMK0BU",
   authDomain: "chatmates-e2c70.firebaseapp.com",
@@ -9,7 +6,7 @@ const firebaseConfig = {
   projectId: "chatmates-e2c70"
 };
 
-const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
-export const db = getDatabase(app);
-export const auth = getAuth(app);
+const auth = firebase.auth();
+const db = firebase.database();
