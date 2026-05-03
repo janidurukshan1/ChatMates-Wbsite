@@ -1,21 +1,17 @@
-/* RESET */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI';
-}
-
-/* LOGIN BACKGROUND (YOUR IMAGE) */
+/* ===== LOGIN BACKGROUND IMAGE ===== */
 .login-bg {
   height: 100vh;
-  background: url('https://media.istockphoto.com/id/484270482/photo/autumn-in-vermont.webp?a=1&b=1&s=612x612&w=0&k=20&c=M_-Tbz-mtTWK1Vu7zKCVCAaufDn9Z4129-8pxvRtQN4=') center/cover no-repeat;
+
+  background: url('https://media.istockphoto.com/id/484270482/photo/autumn-in-vermont.webp?a=1&b=1&s=612x612&w=0&k=20&c=M_-Tbz-mtTWK1Vu7zKCVCAaufDn9Z4129-8pxvRtQN4=')
+              no-repeat center center/cover;
+
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
 }
 
+/* DARK OVERLAY */
 .login-bg::before {
   content: "";
   position: absolute;
@@ -24,171 +20,44 @@
   background: rgba(0,0,0,0.4);
 }
 
-/* LOGIN CARD */
+/* LOGIN BOX */
 .login-card {
   position: relative;
   z-index: 2;
+
   width: 320px;
   padding: 30px;
   border-radius: 20px;
+
   background: rgba(255,255,255,0.1);
   backdrop-filter: blur(18px);
+
   border: 1px solid rgba(255,255,255,0.2);
   color: white;
   text-align: center;
 }
 
+/* INPUTS */
 .login-card input {
   width: 100%;
   padding: 12px;
   margin: 12px 0;
+
   border: none;
   border-bottom: 1px solid rgba(255,255,255,0.6);
+
   background: transparent;
   color: white;
 }
 
+/* BUTTON */
 .login-card button {
   width: 100%;
   padding: 12px;
   border-radius: 10px;
   border: none;
+
   background: linear-gradient(135deg,#00aaff,#007bff);
   color: white;
   cursor: pointer;
-}
-
-/* APP */
-.app {
-  display: flex;
-  height: 100vh;
-}
-
-/* LEFT CHAT LIST */
-.chat-list {
-  width: 35%;
-  background: #f8f9fb;
-  display: flex;
-  flex-direction: column;
-}
-
-.top-bar {
-  background: linear-gradient(135deg,#6a5cff,#8f6fff);
-  color: white;
-  padding: 15px;
-}
-
-.search {
-  margin: 10px;
-  padding: 10px;
-  border-radius: 20px;
-  border: none;
-  background: #eee;
-}
-
-.user-list {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.user {
-  display: flex;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.user:hover {
-  background: #eee;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #6a5cff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  margin-right: 10px;
-}
-
-/* CHAT AREA */
-.chat-area {
-  width: 65%;
-  display: flex;
-  flex-direction: column;
-  background: #e5ddd5;
-}
-
-.chat-header {
-  padding: 15px;
-  background: white;
-  display: flex;
-  justify-content: space-between;
-}
-
-.messages {
-  flex: 1;
-  padding: 15px;
-  overflow-y: auto;
-}
-
-.me {
-  background: #6a5cff;
-  color: white;
-  padding: 10px;
-  border-radius: 10px;
-  margin: 5px;
-  align-self: flex-end;
-}
-
-.other {
-  background: white;
-  padding: 10px;
-  border-radius: 10px;
-  margin: 5px;
-}
-
-/* INPUT */
-.input-area {
-  display: flex;
-  padding: 10px;
-  background: white;
-}
-
-.input-area input {
-  flex: 1;
-  padding: 10px;
-}
-
-.input-area button {
-  margin-left: 10px;
-}
-
-/* POPUP */
-.welcome {
-  position: fixed;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg,#6a5cff,#00d4ff);
-  padding: 20px;
-  border-radius: 15px;
-  color: white;
-  text-align: center;
-  animation: fadeIn 0.5s;
-}
-
-.welcome.hide {
-  animation: fadeOut 0.5s forwards;
-}
-
-@keyframes fadeIn {
-  from {opacity:0; transform: translate(-50%,30px);}
-  to {opacity:1; transform: translate(-50%,0);}
-}
-
-@keyframes fadeOut {
-  to {opacity:0; transform: translate(-50%,30px);}
 }
