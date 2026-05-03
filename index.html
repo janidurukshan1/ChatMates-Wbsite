@@ -17,6 +17,7 @@
   <button onclick="login()">SIGN IN</button>
 </div>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 
@@ -33,11 +34,11 @@ function login() {
   let pass = document.getElementById("password").value;
 
   firebase.auth().signInWithEmailAndPassword(email, pass)
-  .then(() => {
-    localStorage.setItem("firstLogin", "true");
-    window.location = "chat.html";
-  })
-  .catch(err => alert(err.message));
+    .then(() => {
+      localStorage.setItem("firstLogin", "true");
+      window.location = "chat.html";
+    })
+    .catch(err => alert(err.message));
 }
 </script>
 
