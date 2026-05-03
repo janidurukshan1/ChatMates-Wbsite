@@ -8,41 +8,78 @@
 
 <body>
 
+<!-- GET STARTED POPUP -->
 <div id="welcomeBox" class="welcome">
-  <h3>Welcome to ChatMates</h3>
+  <h3>Welcome to ChatMates 👋</h3>
+  <p>Start chatting with your friends</p>
   <button onclick="closeWelcome()">Get Started</button>
 </div>
 
 <div class="app">
 
-  <div class="chat-list">
-    <div class="top-bar">Chat</div>
-    <input class="search" placeholder="Search">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <div class="sidebar-header">
+      <h3>ChatMates</h3>
+      <button onclick="logout()">Logout</button>
+    </div>
+
+    <input class="search" placeholder="Search chats...">
+
     <div id="userList" class="user-list"></div>
+
   </div>
 
+  <!-- CHAT AREA -->
   <div class="chat-area">
+
     <div class="chat-header">
-      <span id="chatName">Select Chat</span>
-      <button onclick="logout()">Logout</button>
+      <div id="chatName">Select Chat</div>
     </div>
 
     <div id="messages" class="messages"></div>
 
     <div class="input-area">
-      <input id="msg" placeholder="Type message"
+      <input id="msg" placeholder="Type a message"
       onkeypress="if(event.key==='Enter') sendMsg()">
-      <button onclick="sendMsg()">Send</button>
+      <button onclick="sendMsg()">➤</button>
     </div>
+
   </div>
 
 </div>
 
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
+<script src="firebase.js"></script>
 <script src="ui.js"></script>
+
+<script>
+// POPUP CONTROL
+window.onload = () => {
+  const box = document.getElementById("welcomeBox");
+
+  if (localStorage.getItem("firstLogin") === "true") {
+    box.style.display = "block";
+    localStorage.removeItem("firstLogin");
+  } else {
+    box.style.display = "none";
+  }
+};
+
+function closeWelcome() {
+  const box = document.getElementById("welcomeBox");
+  box.classList.add("hide");
+
+  setTimeout(() => {
+    box.style.display = "none";
+  }, 400);
+}
+</script>
 
 </body>
 </html>
